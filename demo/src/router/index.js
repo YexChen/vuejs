@@ -11,9 +11,13 @@ export default new Router({
   // mode : "history",
   routes: [
     {
-      path: '/goods',
+      path: '/',
       name: 'goodTrade',
-      component: goodTrade,
+      components: {
+        default : goodTrade,
+        title : Title,
+        image : Image
+      },
       children : [
       	{
       		path : "title",
@@ -28,7 +32,7 @@ export default new Router({
       ]
     },
     {
-    	path : "/cart",
+    	path : "/cart:cartName",
     	name : "cart",
     	component : Cart
     }
