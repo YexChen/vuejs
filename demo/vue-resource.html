@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<link rel="stylesheet" href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+		<meta http-equiv="Content-Type" content = "text/html;charset=utf-8">
+		<script src = "node_modules/vue/dist/vue.js"></script>
+		<script src = "node_modules/vue-resource/dist/vue-resource.js"></script>
+	</head>
+
+	<body>
+		<div class = "container" id = "app">
+			<a href = "javascript:;	" class = "btn btn-default" v-on:click = "get">Get请求</a>
+			<a href = "javascript:;" class = "btn btn-default" v-on:click = "post">Post请求</a>
+			<a href = "javascript:;" class = "btn btn-default" v-on:click = "jsonp">Json请求</a>
+			<br/>
+			<span>{{msg}}</span>
+ 		</div>
+
+ 		<script>
+ 			new Vue({
+ 				el : '#app',
+ 				data : {
+ 					msg : "hello world"
+ 				},
+ 				methods : {
+ 					get : function(){
+ 						this.$http.get("package.json",{
+ 							params : {
+ 								userId : "12345"
+ 							},
+ 							headers : {
+ 								token : "abcd"
+ 							}
+ 						}).then(res => {
+ 							this.msg = res.data;
+ 						},error => {
+ 							this.msg = error;
+ 						});
+ 						},
+ 					post : function(){
+ 						this.$http.post("package.json",{
+ 							userId : "1234567"
+ 						},{
+ 							headers : {
+ 								access_token : "hahaha"
+ 							}
+ 						}).then(function (res){
+ 							this.msg = res.data;
+ 						});
+ 					},
+ 					 jsonp : function(){
+ 					 	this.$http.jsonp("http://www.imooc.com/course/AjaxCourseMembers?ids=796").then(function(res){
+ 					 		this.msg = res.data
+ 					 	});
+ 					 }
+ 					}
+ 				});
+ 		</script>
+	</body>
+
+</html>
