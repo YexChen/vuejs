@@ -5,13 +5,14 @@
 		<meta http-equiv="Content-Type" content = "text/html;charset=utf-8">
 		<script src = "node_modules/vue/dist/vue.js"></script>
 		<script src = "node_modules/vue-resource/dist/vue-resource.js"></script>
+		<script src = "node_modules/axios/dist/axios.js"></script>
 	</head>
 
 	<body>
 		<div class = "container" id = "app">
+			<h1>Axios架构</h1>
 			<a href = "javascript:;	" class = "btn btn-primary" v-on:click = "get">Get请求</a>
 			<a href = "javascript:;" class = "btn btn-primary" v-on:click = "post">Post请求</a>
-			<a href = "javascript:;" class = "btn btn-primary" v-on:click = "jsonp">Json请求</a>
 			<a href = "javascript:;" class = "btn btn-primary" v-on:click = "http">Http请求</a>
 			<br/>
 			<span>{{msg}}</span>
@@ -24,12 +25,14 @@
  					msg : "hello world"
  				},
  				mounted : function(){
- 					Vue.http.interceptors.push(function (request,next){
- 						console.log("request initial has complete.");
- 						next(function(response){
- 							console.log("request reponded");
- 							return response;
- 						});
+ 					axios.interceptors.request.use(function(config){
+ 						console.log("request initialized");
+ 						return config;
+ 					});
+
+ 					axios.interceptors.response.use(function(response){
+ 						console.log("response has been called");
+ 						return response;
  					});
  				},
  				// 这里是路由截取
@@ -38,52 +41,50 @@
  				// }
  				methods : {
  					get : function(){
- 						this.$http.get("package.json",{
- 							params : {
- 								userId : "12345"
+ 						axios.get("package.json",{
+ 							params:{
+ 								userId : "1234"
  							},
  							headers : {
- 								token : "abcd"
- 							}
+ 								token : "whahaha"
+ 							},
  						}).then(res => {
  							this.msg = res.data;
- 						},error => {
- 							this.msg = error;
+ 						}).catch(function(error){
+ 							console.log("an error has been occured" + error);
  						});
  						},
  					post : function(){
- 						this.$http.post("package.json",{
- 							userId : "1234567"
+ 						axios.post("package.json",{
+ 							userId : "123"
  						},{
  							headers : {
- 								access_token : "hahaha"
+ 								token : "whahahaahaaa"
  							}
- 						}).then(function (res){
+ 						}).then(res => {
  							this.msg = res.data;
+ 						}).catch(function(error){
+
  						});
  					},
- 					 jsonp : function(){
- 					 	this.$http.jsonp("http://www.imooc.com/course/AjaxCourseMembers?ids=796").then(function(res){
- 					 		this.msg = res.data
- 					 	});
- 					 },
- 					 http : function(){
- 					 	this.$http({
- 					 		url : "package.json",
- 					 		params:{
- 					 			userId : "1234"
- 					 		},
- 					 		headers:{
- 					 			token : "123"
- 					 		},
- 					 		timeout : 5,
- 					 		before : function(){
- 					 			console.log("before intialize");
- 					 		}
-
- 					 	}).then(function(res){
- 					 		this.msg = res.data;
- 					 	})
+ 					http : function(){
+ 						axios({
+ 							url : "package.json",
+ 							method : "get",
+ 							// 这是post使用的
+ 							// data : {
+ 							// 	userId : "123"
+ 							// },
+ 							// 这是get使用的
+ 							params : {
+ 								userId : "123"
+ 							},
+ 							headers : {
+ 								token : "hahaha"
+ 							}
+ 						}).then(res => {
+ 							this.msg = res.data;
+ 						})
  					 }
  					}
  				});
